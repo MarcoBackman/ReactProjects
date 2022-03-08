@@ -1,2 +1,2 @@
 # ReactProjects
-Projects for practicing reacts
+Projects for practicing React framework
