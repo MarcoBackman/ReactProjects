@@ -1,0 +1,5 @@
+nav.nav_bar {
+    display: flex;
+    float: right;
+    padding: 0.5em 2em 0.5em 1em;
+}

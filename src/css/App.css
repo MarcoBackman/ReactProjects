@@ -1,0 +1,7 @@
+h1#main_title {
+    display: inline-block;
+    position: relative;
+    text-align: center;
+    width: 100%;
+    color: #8ca8da;
+}
