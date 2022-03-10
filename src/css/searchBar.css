@@ -34,6 +34,7 @@ input#recipe-search-input {
     font-weight: 600;
     font-family: "Segoe UI", Roboto, Helvetica, Arial, serif;
     color: #70737c;
+    transition-duration: 0.3s;
 }
 
 input#recipe-search-input:focus {
@@ -41,4 +42,5 @@ input#recipe-search-input:focus {
     background-color: #efefef;
     border-radius: 5px;
     margin: 0 1em 0 1em;
+    transition-duration: 0.3s;
 }

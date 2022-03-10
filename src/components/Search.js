@@ -1,7 +1,10 @@
 import '../css/searchBar.css';
 import DisplaySection from './DisplaySection';
 import {BiSearchAlt} from 'react-icons/bi';
-import React , { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import ViewRecipe from "./ViewRecipe";
+import history from "./History";
 
 function RemoveDefaultInput(event) {
     let value = event.target.value;
@@ -12,13 +15,34 @@ function RemoveDefaultInput(event) {
 
 function Search(props) {
 
-    const [data, setData] = useState([]);
-    const userData = props.userData;
+
+
+    //storage for matched recipe
+    const [matchData, setMatchData] = useState([]);
+    //selected recipe data
+    const [selectedRecipe,setRecipe] = useState(null);
+    //original recipe data
+    const [data,setData]=useState([]);
+
+    const fetchData = () => {
+        fetch("/recipes.json")
+            .then(response => {
+                return response.json();
+            }).then(data => {
+            setData(data);
+        });
+    }
+
+    useEffect(()=>{
+        fetchData();
+    },[])
+
+
 
     //returns recipe by name, recipe is an array of recipe
     const searchRecipes = (inputValue) => {
         let tempSelectedRecipe = [];
-        props.recipeData.map(singleRecipe => {
+        data.map(singleRecipe => {
             let recipeName = singleRecipe.name.toLowerCase();
             let recipeDescription = singleRecipe.description.toLowerCase();
             let recipeIngredient = singleRecipe.ingredients;
@@ -44,20 +68,21 @@ function Search(props) {
 
     const onValueChange = (event) => {
         //clear existing lists
-        setData([])
+        setMatchData([])
 
         let inputValue = event.target.value;
 
         if (inputValue === "") {
-            setData([]);
+            setMatchData([]);
         } else if (inputValue === null) {
-            setData([]);
+            setMatchData([]);
         } else {
-            setData(searchRecipes(inputValue));
+            setMatchData(searchRecipes(inputValue));
         }
     }
 
-    //initial render - always starts first
+
+    //set router here
     return (
         <div className="search-bar-section">
             <div className="search-bar">
@@ -67,7 +92,23 @@ function Search(props) {
                            onChange={onValueChange} defaultValue="Search Food"/>
                 </label>
             </div>
-            <DisplaySection recipeList={data}/>
+            <BrowserRouter history={history}>
+                <Routes>
+                    <Route path="*" element={
+                        <DisplaySection userData={props.userData}
+                                        setUserData={props.setUserData}
+                                        recipeList={matchData}
+                                        selectedRecipe={selectedRecipe}
+                                        setRecipe={setRecipe}
+                        />}
+                    />
+                    <Route exact path="/viewRecipe" element={
+                        <ViewRecipe userData={props.userData}
+                                    recipe={selectedRecipe}
+                        />}
+                    />
+                </Routes>
+            </BrowserRouter>
         </div>
     );
 }

@@ -1,13 +1,9 @@
-import { MdOutlineFavorite } from 'react-icons/md';
+import { MdOutlineFavorite, MdFavoriteBorder } from 'react-icons/md';
 import { GrView } from 'react-icons/gr';
-
-import { MdFavoriteBorder } from 'react-icons/md';
 import '../css/recipeCard.css';
-import {BiSearchAlt} from "react-icons/bi";
-import React from "react";
-
-//<MdFavoriteBorder/> -> for favorite
-//MdOutlineFavorite/> -> for unfavorite
+import history from './History';
+import React, {useState} from "react";
+import { useNavigate } from "react-router-dom";
 
 //Given example: PT30M, PT1H, PT1H30M
 function convertTime(rawData) {
@@ -42,20 +38,13 @@ function convertTime(rawData) {
     return "" + hour + ":" + min;
 }
 
-//For React Router
-export function RecipeCardFull(recipe) {
-
-}
-
-function RecipeCard(props){
-    let cardData = props.recipe;
+let refineData = (cardData) => {
     let recipe_name = cardData.name.replace("&amp;", "&")
-                                    .replace("&gt;", ">")
-                                    .replace("&lt;", "<")
-                                    .replace("&quot;", '"');
+        .replace("&gt;", ">")
+        .replace("&lt;", "<")
+        .replace("&quot;", '"');
+
     let cook_time = "N/A", prep_time = "N/A", recipe_yield = "N/A";
-
-
 
     if (cardData.cookTime !== "") {
         cook_time = convertTime(cardData.cookTime);
@@ -68,14 +57,58 @@ function RecipeCard(props){
     if (cardData.recipeYield !== "") {
         recipe_yield = cardData.recipeYield;
     }
+    return {
+        recipe_name: recipe_name,
+        cook_time: cook_time,
+        prep_time : prep_time,
+        recipe_yield: recipe_yield};
+}
+
+function RecipeCard(props){
+    //set navigation
+    let cardData = props.recipe;
+    let refinedData = refineData(cardData);
+    let userFavorite = props.userData.favorite_list;
+
+    const [icon, setIcon] = useState(<MdFavoriteBorder/>);
+    const [state, setState] = useState("Add to favorite");
+
+    let navigate = useNavigate();
+
+    function onViewClickHandler(e) {
+        e.preventDefault();
+        props.setRecipe(cardData);
+
+        //route redirection request
+        navigate('/viewRecipe', {userData : props.userData,
+                                 recipe : cardData});
+    }
+
+    function onFavClickHandler(e) {
+        e.preventDefault();
+        //if in favorite list
+        if (props.recipeNumber in userFavorite) {
+            delete userFavorite[props.recipeNumber];
+            setIcon(<MdFavoriteBorder/>);
+            setState("Add to favorite");
+        } else { //if not in favorite list
+            userFavorite[props.recipeNumber] = cardData;
+            setIcon(<MdOutlineFavorite/>);
+            setState("Remove from favorite");
+        }
+    }
+
+    function handleImageError(ev) {
+        ev.target.src = "../defaultFood.png";
+    }
 
     return (
         <article className="recipe_card">
-            <img className="recipe_img" alt="image" src={cardData.image}>
+            <img className="recipe_img" alt="image" src={cardData.image} onError={handleImageError}>
 
             </img>
             <h1 className="recipe_name">
-                {recipe_name}
+                {refinedData.recipe_name}
             </h1>
             <div className="card_summary">
                 <div className="summary_line">
@@ -83,7 +116,7 @@ function RecipeCard(props){
                         Cook Time:&nbsp;
                     </p>
                     <p>
-                        {cook_time}
+                        {refinedData.cook_time}
                     </p>
                 </div>
                 <div className="summary_line">
@@ -91,7 +124,7 @@ function RecipeCard(props){
                         Prep Time:&nbsp;
                     </p>
                     <p>
-                        {prep_time}
+                        {refinedData.prep_time}
                     </p>
                 </div>
                 <div className="summary_line">
@@ -99,16 +132,19 @@ function RecipeCard(props){
                         Yield:&nbsp;
                     </p>
                     <p>
-                        {recipe_yield}
+                        {refinedData.recipe_yield}
                     </p>
                 </div>
             </div>
             <div className="button_section">
-                <button type="button" className="view_detail" name="view_detail">
+                <button type="button" className="view_detail" name="view_detail"
+                        onClick={onViewClickHandler}>
                     <GrView/> View Recipe
                 </button>
-                <button type="button"  className="add_favorite"name="add_favorite">
-                    <MdOutlineFavorite/> Add to Favorite
+                <button type="button"  className="add_favorite" name="add_favorite"
+                        onClick={onFavClickHandler}>
+                    {icon}
+                    {state}
                 </button>
             </div>
         </article>

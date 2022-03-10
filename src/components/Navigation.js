@@ -6,12 +6,17 @@ import GroceryList from "./GroceryList";
 //contains GroceryList and Users
 function Navigation(props){
 
-    let selected_user = props.user.name
+    let groceryList = props.user.grocery_list;
+    let selectedUser = props.user.name;
+
+    //<GroceryList grocery={groceryList}/>
 
     return (
         <nav className="nav_bar">
-            <GroceryList/>
-            <p id="user_label">Welcome, {selected_user}</p>
+            <button id="grocery_btn">
+                Grocery List
+            </button>
+            <p id="user_label">Welcome, {selectedUser}</p>
         </nav>
     )
 }

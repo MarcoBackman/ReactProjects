@@ -8,16 +8,22 @@ article.recipe_card {
     padding: 0;
     border: 2px solid #868aa1;
     border-radius: 10px;
+    transition-duration: 0.3s;
 }
 
 article.recipe_card:hover {
     box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+    transition-duration: 0.3s;
+}
+
+article.recipe_card > img {
+    transition-duration: 0.3s;
 }
 
 article.recipe_card:hover > img {
+    transition-duration: 0.3s;
     filter: hue-rotate(13deg) brightness(115%);
 }
-
 
 img.recipe_img {
     max-width:100%;
@@ -66,11 +72,13 @@ button {
     border: none;
     border-radius: 10px;
     font-size: 10px;
+    transition-duration: 0.3s;
 }
 
 button:hover {
     background-color: #c9cfd5;
     cursor: pointer;
+    transition-duration: 0.3s;
 }
 
 button svg {
