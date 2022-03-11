@@ -10,13 +10,14 @@ section.displaySection {
     margin: 1em 2.5% 1em 2.5%;
     min-height: 400px;
 
-    width: 100%;
-    max-width: 95%;
+    width: 95%;
 }
 
 @media only screen and (max-width: 768px) {
     section.displaySection {
+        width: 100%;
         -ms-grid-columns: 1fr;
         grid-template-columns: 1fr;
+        margin: 1em 2.5% 1em 2.5%;
     }
 }

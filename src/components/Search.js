@@ -5,6 +5,7 @@ import React, {useEffect, useState} from 'react';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import ViewRecipe from "./ViewRecipe";
 import history from "./History";
+import GroceryList from "./GroceryList";
 
 function RemoveDefaultInput(event) {
     let value = event.target.value;
@@ -14,15 +15,13 @@ function RemoveDefaultInput(event) {
 }
 
 function Search(props) {
-
-
-
     //storage for matched recipe
     const [matchData, setMatchData] = useState([]);
     //selected recipe data
     const [selectedRecipe,setRecipe] = useState(null);
     //original recipe data
     const [data,setData]=useState([]);
+
 
     const fetchData = () => {
         fetch("/recipes.json")
@@ -68,10 +67,8 @@ function Search(props) {
 
     const onValueChange = (event) => {
         //clear existing lists
-        setMatchData([])
-
+        setMatchData([]);
         let inputValue = event.target.value;
-
         if (inputValue === "") {
             setMatchData([]);
         } else if (inputValue === null) {
@@ -80,7 +77,6 @@ function Search(props) {
             setMatchData(searchRecipes(inputValue));
         }
     }
-
 
     //set router here
     return (

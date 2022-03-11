@@ -2,14 +2,14 @@ import '../css/App.css';
 import Search from "./Search";
 import UserContext from "./User";
 import Navigation from "./Navigation";
-import React, {useState,useEffect} from 'react';
+import React, {useState} from 'react';
 function App() {
 
 
-    const [userData,setUserData]=useState({
+    const [userData,setUserData] = useState({
         name : "Tony Baek",
         favorite_list : {},
-        grocery_list : [],
+        grocery_list : []
     });
 
     return (

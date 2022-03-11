@@ -1,8 +1,7 @@
 import { MdOutlineFavorite, MdFavoriteBorder } from 'react-icons/md';
 import { GrView } from 'react-icons/gr';
 import '../css/recipeCard.css';
-import history from './History';
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 
 //Given example: PT30M, PT1H, PT1H30M
@@ -38,7 +37,7 @@ function convertTime(rawData) {
     return "" + hour + ":" + min;
 }
 
-let refineData = (cardData) => {
+export function refineData(cardData) {
     let recipe_name = cardData.name.replace("&amp;", "&")
         .replace("&gt;", ">")
         .replace("&lt;", "<")
@@ -64,40 +63,65 @@ let refineData = (cardData) => {
         recipe_yield: recipe_yield};
 }
 
-function RecipeCard(props){
+//initial fav icon load
+export function identifyFavIcon(recipeName, favorite_list) {
+    if (recipeName in favorite_list) {
+        return <MdOutlineFavorite/>;
+    } else { //if not in favorite list
+        return <MdFavoriteBorder/>;
+    }
+}
+
+//initial fav state load
+export function identifyFavSate(recipeName, favorite_list) {
+    if (recipeName in favorite_list) {
+        return ("Remove from favorite");
+    } else { //if not in favorite list
+        return ("Add to favorite");
+    }
+}
+
+function RecipeCard(props) {
     //set navigation
     let cardData = props.recipe;
     let refinedData = refineData(cardData);
     let userFavorite = props.userData.favorite_list;
 
-    const [icon, setIcon] = useState(<MdFavoriteBorder/>);
-    const [state, setState] = useState("Add to favorite");
+    const [icon, setIcon] = useState(identifyFavIcon(cardData.name, userFavorite));
+    const [state, setState] = useState(identifyFavSate(cardData.name, userFavorite));
+
+    //On input change, rerender state
+    useEffect(() => {
+        setIcon(identifyFavIcon(cardData.name, userFavorite));
+        setState(identifyFavSate(cardData.name, userFavorite));
+    },[props.recipeList, props.userData.favorite_list]);
 
     let navigate = useNavigate();
 
+    //Switch view on clicking detailed view button
     function onViewClickHandler(e) {
         e.preventDefault();
         props.setRecipe(cardData);
-
-        //route redirection request
         navigate('/viewRecipe', {userData : props.userData,
-                                 recipe : cardData});
+                                 recipe : props.recipe});
     }
 
+    //change icon and statement on fav button click
     function onFavClickHandler(e) {
         e.preventDefault();
         //if in favorite list
-        if (props.recipeNumber in userFavorite) {
-            delete userFavorite[props.recipeNumber];
+        if (cardData.name in userFavorite) {
+            delete userFavorite[cardData.name];
             setIcon(<MdFavoriteBorder/>);
             setState("Add to favorite");
         } else { //if not in favorite list
-            userFavorite[props.recipeNumber] = cardData;
+            userFavorite[cardData.name] = cardData;
             setIcon(<MdOutlineFavorite/>);
             setState("Remove from favorite");
         }
     }
 
+    //Show default img on img load error
     function handleImageError(ev) {
         ev.target.src = "../defaultFood.png";
     }

@@ -1,15 +1,15 @@
 import RecipeCard from "./RecipeCard";
 import '../css/DisplaySection.css';
-import React from "react";
 
 //Display for search results
 function DisplaySection(props) {
 
     let listOfRecipe = [];
 
+    //Only displays searched result
     for (let i = 0; i < props.recipeList.length; i++) {
         listOfRecipe.push(<RecipeCard key={i}
-                                      recipeNumber={i}
+                                      recipeList={props.recipeList}
                                       recipe={props.recipeList[i]}
                                       userData={props.userData}
                                       setUserData={props.setUserData}
