@@ -110,7 +110,7 @@ function App() {
     }
 
     async function handleSubmit(newRecipe) {
-        await axios.post('http://52.0.18.184:8080/save_recipe', newRecipe)
+        await axios.post('http://localhost:8080/save_recipe', newRecipe)
             .then(resp => {
                 alert("Recipe added");
                 emptyInputFields();
@@ -125,7 +125,7 @@ function App() {
     }
 
     async function readUserRecipeFromDB() {
-        await axios.get('http://52.0.18.184:8080/getUserRecipe')
+        await axios.get('http://localhost:8080/getUserRecipe')
             .then(resp => {
                 setUserRecipe(resp.data);
             })
@@ -136,7 +136,7 @@ function App() {
     }
 
     async function getpopulateDBRouter() {
-        await axios.get('http://52.0.18.184:8080/getPopDBRecipe')
+        await axios.get('http://localhost:8080/getPopDBRecipe')
             .then(resp => {
                 setDBRecipe(resp.data);
             })

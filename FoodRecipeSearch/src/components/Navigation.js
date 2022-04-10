@@ -61,7 +61,7 @@ function Navigation(props){
     }
 
     async function getpopulateDBRouter() {
-        await axios.get('http://52.0.18.184:8080/getPopDBRecipe')
+        await axios.get('http://localhost:8080/getPopDBRecipe')
             .then(resp => {
                 props.state(resp.data);
             })
@@ -74,7 +74,7 @@ function Navigation(props){
 
     //Post single request to DB
     async function handlePost(localRecipe) {
-        await axios.post('http://52.0.18.184:8080/populate', localRecipe)
+        await axios.post('http://localhost:8080/populate', localRecipe)
             .then(async(resp) => {
 
             })
@@ -91,13 +91,15 @@ function Navigation(props){
     async function onClickPopulateDB() {
         //Request each of the data
         stateFunction("Populating...");
-        const response = await fetch("/recipes.json")
+        const response = fetch("/recipes.json")
             .then(response => {
-                console.log(response.json());
-            }).then(data => {
+                return response.json();
+            })
+            .then(data => {
                 //allow only 782 of the 787 even recipes.json contains more than 782
+                console.log(data);
                 let count = 0;
-                data.map(async (singleRecipe) => {
+                data.map((singleRecipe) => {
                     if (count < 782 ){
                         handlePost(singleRecipe);
                         ++count;
