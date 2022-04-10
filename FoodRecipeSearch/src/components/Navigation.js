@@ -61,7 +61,7 @@ function Navigation(props){
     }
 
     async function getpopulateDBRouter() {
-        await axios.get('http://localhost:8080/getPopDBRecipe')
+        await axios.get('http://52.0.18.184:8080/getPopDBRecipe')
             .then(resp => {
                 props.state(resp.data);
             })
@@ -74,9 +74,9 @@ function Navigation(props){
 
     //Post single request to DB
     async function handlePost(localRecipe) {
-        await axios.post('http://localhost:8080/populate', localRecipe)
+        await axios.post('http://52.0.18.184:8080/populate', localRecipe)
             .then(async(resp) => {
-                
+
             })
             .catch(err => {
                 console.error(err);
