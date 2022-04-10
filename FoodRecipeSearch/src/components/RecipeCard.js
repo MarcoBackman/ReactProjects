@@ -23,6 +23,7 @@ function convertTime(rawData) {
                 str = "";
             }
             hours_taken = true;
+            continue;
         }
 
         if (data[i] === 'M') {
@@ -121,14 +122,11 @@ function RecipeCard(props) {
         }
     }
 
-    //Show default img on img load error
-    function handleImageError(ev) {
-        ev.target.src = "../defaultFood.png";
-    }
-
     return (
         <article className="recipe_card">
-            <img className="recipe_img" alt="image" src={cardData.image} onError={handleImageError}>
+            <img className="recipe_img"
+                 src={cardData.image}
+                 onError={(e)=>{e.target.onerror = null; e.target.src='./defaultFood.png'}}>
 
             </img>
             <h1 className="recipe_name">

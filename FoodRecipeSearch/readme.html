@@ -5,8 +5,7 @@
     <title>Submission Detail</title>
   </head>
   <body>
-    <h2> File Structures </h2>
-    <p>
+    <h2> React File Structures </h2>
     <pre>
           ├── readme.html
           └── src
@@ -38,11 +37,25 @@
                     ViewFavorite.css
                     ViewRecipe.css
     </pre>
-    </p>
+    <h2> Node/Express File Structures </h2>
+    <pre>
+      server_api
+          ├── app.js
+          ├── models
+          │    └──Recipe.js
+          └── routes
+            ├──index.js
+            ├──populate.js
+            ├──saveRecipe.js
+            └──users.js
+    </pre>
     <h2> EC2 Operation Video </h2>
+    <p>
+      In order to run React on EC2, PM2 framework is used on port 3000 to access the application through the Internet.
+    </p>
+
     <video width="820" height="540" controls>
-      <source src="../cse4234_SungJunBaek_project4/recipe-search/src/video/web-assign2-2022-02-05_16.59.32.mp4" type="video/mp4">
-      <source src="movie.ogg" type="video/ogg">
+      <source src="video/ec2.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
     <br>
@@ -51,8 +64,7 @@
     <br>
     <h2> Website Video on EC2</h2>
     <video width="820" height="540" controls>
-      <source src="../cse4234_SungJunBaek_project4/recipe-search/src/video/web-assign2-2022-02-19_02.00.35.mp4" type="video/mp4">
-      <source src="movie.ogg" type="video/ogg">
+      <source src="video/result.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
     <br>
@@ -62,43 +74,109 @@
     <h2> Additional Comments </h2>
     <h3>Question 1-1</h3>
     <p>
-      React used based on controlled (Functional)components - 2pts
-      Able to perform search in real time and renders on each key type change.<br>
-      Able to show perform percolation of data based on given json file. - 2pts
+      <label>
+        <input type="checkbox" readonly="readonly" checked/>
+      </label>
+      Full-stack app created to facilitate communication between MERN frameworks - 4pts
     </p>
+
     <h3>Question 1-2</h3>
     <p>
-      React has minimum components - App, Navigation, Search, RecipeCard, GroceryList, User.
-        User page uses UserContext to pass global field static variable to children. - 4pts
+      <label>
+        <input type="checkbox" readonly="readonly" checked/>
+      </label>
+      Clicking a Populate DB button in the React App sends a POST request to a Node app
+      that adds 782 of the 787 recipes from the recipe.json file to the DB based on a Mongoose model
+      - 2pts.
+      <br>
+      <br>
+      <label>
+        <input type="checkbox" readonly="readonly" checked/>
+      </label>
+      Populate DB button disappears after it has been clicked and the DB has been populated with
+      recipes from the dataset. - 1pts
+      <br>
+      <br>
+      <label>
+        <input type="checkbox" readonly="readonly" checked/>
+      </label>
+      After the data has been written to the DB, a message is returned to and displayed in
+      the UI as confirmation - 1pts
+      <br>&nbsp;&nbsp;&nbsp;&nbsp;--> Used alert feature
     </p>
     <h3>Question 1-3</h3>
     <p>
-      Json file is fetched using promises with useEffects for realtime data load - 2tps
+      <label>
+        <input type="checkbox" readonly="readonly" checked/>
+      </label>
+      Clicking an Add Recipe button in the tReact App displays a form hat allows the
+      user to add a new recipe to the database - 3pts.
+
+      <br>
+      <br>
+      <label>
+        <input type="checkbox" readonly="readonly" checked/>
+      </label>
+      The user can create a recipe by adding one ingredient at a time using input fields for quantity,
+      measurement, and ingredient name - 3pts.
     </p>
     <h3>Question 1-4</h3>
     <p>
-      Implemented mobile view to have items in 1 column as same as Project 3. - 2tps
-    </p>
-
-    <h3>Question 1-5</h3>
-    <p>
-      Items in the main container populated as cards for a simple view (5 cards in a row).
-      Each card contains:
-          - Image
-          - Name
-          - Time in HH:MM format
-          - View recipe link and favorite link
-      Can view description in a full page on "see description" button click.(Used routers)
-      Can Add and Remove ingredients from the shopping list: is visible as drop down menu on the navigation bar.
-      - 8 pts
+      <label>
+        <input type="checkbox" readonly="readonly" checked/>
+      </label>
+      The input field for the name of the ingredient uses an auto-suggest feature to suggest ingredients to the user
+      based on ingredients that are already in the database - 4pts.
+      <br>&nbsp;&nbsp;&nbsp;&nbsp;--> Used regex to percolate data to datalist on app load after local fetch is done
+      <br>
+      <br>
+      <label>
+        <input type="checkbox" readonly="readonly" checked/>
+      </label>
+      A table of ingredients is displayed each time the user adds an ingredient -1pt.
+      <br>
+      <br>
+      <label>
+        <input type="checkbox" readonly="readonly" checked/>
+      </label>
+      Upon addition of a recipe to the database using the Add Recipe Form, a message containing a count of the number
+      of recipes in the database is displayed in the UI - 1pt.
+      <br>&nbsp;&nbsp;&nbsp;&nbsp;--> read DB on app load, read DB on add recipe, read DB on populate DB.
     </p>
     <h3>Question 2</h3>
     <p>
-      Css, JS used based on best practices. Removed all previous errors and warning - 5pts
+      <label>
+        <input type="checkbox" readonly="readonly" checked/>
+      </label>
+      CSS, JS used based on best practices. Removed all previous errors and warning - 5pts
+      <br>&nbsp;&nbsp;&nbsp;&nbsp;--> Fixed timeline error.
     </p>
     <h3>Question 3</h3>
     <p>
+      <label>
+        <input type="checkbox" readonly="readonly"/>
+      </label>
       HTML page readme.html provided with EC2 working evidence - 5pts
+      <br>&nbsp;&nbsp;&nbsp;&nbsp;--> Host both db and react app on AWS EC2
+    </p>
+    <h3>Additional Works</h3>
+    <p>
+      - Images set to a default image when external images fail to load
+      <br>
+      - Set image request error to null when failed once -> Prevents infinite request
+      <br>
+      - Show amount of searched data
+      <br>
+      - Can remove added ingredients by clicking button next to the list
+      <br>
+      - Prevents post request when DB/express is on process
+      <br>
+      - Removes input fields and lists on successful post
+      <br>
+      - States the server is disconnected(including on GET/POST action)
+      when server is not running or nor responding
+      <br>
+      - Reduced multiple and redundant GET request by using useEffect.
     </p>
   </body>
 </html>

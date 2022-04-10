@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import '../css/ViewRecipe.css';
 import {MdFavoriteBorder, MdOutlineFavorite} from "react-icons/md";
 import {AiOutlineCloseCircle} from "react-icons/ai";
@@ -59,7 +59,7 @@ function ViewRecipe(props) {
     return (
         <article className="full_recipe_card">
             <AiOutlineCloseCircle className="closeBtn" onClick={(e) => {navigate(-1)}}/>
-            <img className="full_recipe_img" alt="image" src={cardData.image}/>
+            <img className="full_recipe_img" src={cardData.image}/>
             <h1 className="full_recipe_name">
                 {refineData(cardData).recipe_name} Recipe
             </h1>
