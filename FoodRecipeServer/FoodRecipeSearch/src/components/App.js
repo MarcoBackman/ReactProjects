@@ -110,7 +110,7 @@ function App() {
     }
 
     async function handleSubmit(newRecipe) {
-        await axios.post('http://localhost:8080/save_recipe', newRecipe)
+        await axios.post('/api/save_recipe', newRecipe)
             .then(resp => {
                 alert("Recipe added");
                 emptyInputFields();
@@ -125,7 +125,7 @@ function App() {
     }
 
     async function readUserRecipeFromDB() {
-        await axios.get('http://localhost:8080/getUserRecipe')
+        await axios.get('/api/getUserRecipe')
             .then(resp => {
                 setUserRecipe(resp.data);
             })
@@ -136,7 +136,7 @@ function App() {
     }
 
     async function getpopulateDBRouter() {
-        await axios.get('http://localhost:8080/getPopDBRecipe')
+        await axios.get('/api/getPopDBRecipe')
             .then(resp => {
                 setDBRecipe(resp.data);
             })
@@ -144,7 +144,6 @@ function App() {
                 setDBRecipe("Server Disconnected");
                 console.error(err);
             });
-
     }
 
     function emptyInputFields() {
@@ -196,6 +195,27 @@ function App() {
         await readUserRecipeFromDB();
         await getpopulateDBRouter();
     }, [])
+
+    const [state, setDataState] = useState(null);
+
+    // fetching the GET route from the Express server which matches the GET route from server.js
+    async function callBackendAPI() {
+        const response = await fetch('/');
+        const body = await response.json();
+
+        if (response.status !== 200) {
+            throw Error(body.message)
+        }
+        return body;
+    }
+
+    function componentDidMount() {
+        callBackendAPI()
+        .then(res => this.setState({ data: res.express }))
+        .catch(err => console.log(err));
+    }
+
+    componentDidMount();
 
     return (
         <UserContext.Provider value={userData}>

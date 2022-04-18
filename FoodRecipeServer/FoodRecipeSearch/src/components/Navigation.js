@@ -61,7 +61,7 @@ function Navigation(props){
     }
 
     async function getpopulateDBRouter() {
-        await axios.get('http://localhost:8080/getPopDBRecipe')
+        await axios.get('/api/getPopDBRecipe')
             .then(resp => {
                 props.state(resp.data);
             })
@@ -74,7 +74,7 @@ function Navigation(props){
 
     //Post single request to DB
     async function handlePost(localRecipe) {
-        await axios.post('http://localhost:8080/populate', localRecipe)
+        await axios.post('/api/populate', localRecipe)
             .then(async(resp) => {
 
             })
@@ -126,7 +126,7 @@ function Navigation(props){
 
     return (
         <nav className="nav_bar">
-            <form id="populate_db_form" action="/populate_db"  method="post"/>
+            <form id="populate_db_form" action="/api/populate_db"  method="post"/>
             <button id="populate_btn" className="nav_button" type="submit"
                     form="populate_db_form" value="Submit" onClick={handleSubmit}>
                 {dbText}

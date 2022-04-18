@@ -1,5 +1,5 @@
 let createError = require('http-errors');
-let express = require('express');
+const express = require('express')
 let path = require('path');
 let cookieParser = require('cookie-parser');
 let logger = require('morgan');
@@ -16,25 +16,31 @@ let getRecipeAPIRouter = require("./routes/readUserRecipe"); //Post
 let populateDBRouter = require("./routes/populateDB"); //Post
 let getPopulateDBRouter = require("./routes/readPopulatedRecipe"); //Posts
 
-let app = express();
+const app = express();
+const port = 5000;
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.listen(port, () => console.log('Server ready on port:' + port))
+
+/* GET React App */
+/* GET React App */
+
 app.set('view engine', 'jade');
 
 app.use(cors());
 app.use(logger('dev'));
-app.use(express.json());0
+app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use("/save_recipe", recipeAPIRouter);
-app.use("/populate", populateDBRouter);
-app.use("/getUserRecipe", getRecipeAPIRouter);
-app.use("/getPopDBRecipe", getPopulateDBRouter);
+app.use("/api/save_recipe",
+    recipeAPIRouter);
+app.use("/api/populate",
+    populateDBRouter);
+app.use("/api/getUserRecipe",
+    getRecipeAPIRouter);
+app.use("/api/getPopDBRecipe",
+    getPopulateDBRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
