@@ -1,0 +1,31 @@
+div.category_panel {
+    display: block;
+    position: relative;
+    height: 650px;
+    max-height: 650px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    margin: 2em 0 2em 0.5em;
+}
+
+div.category_panel > h1 {
+    color: white;
+    display: flex;
+    padding-left: 2em;
+    margin: 0 0 2em 0;
+}
+
+div.category_panel > h1:after {
+    position: absolute;
+    content : "";
+    width : 100%;
+    height : 3px;
+    background-color: #525252;
+    top: 2em;
+    left: 1em;
+}
+
+div.card_field {
+    display: inline;
+}

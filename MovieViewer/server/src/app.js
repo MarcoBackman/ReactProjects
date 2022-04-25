@@ -1,43 +1,62 @@
-let createError = require('http-errors');
-const express = require('express')
-let path = require('path');
-let cookieParser = require('cookie-parser');
-let logger = require('morgan');
-let cors = require('cors');
+const createError = require('http-errors');
+const express = require('express');
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const cors = require('cors');
 
-//Models
-import UserSchema from './models/UserSchema';
-import MovieSchema from './models/MovieSchema';
+//local config file import
+let serverConfig = require("./config/serverConfig.json"); //Get
 
+//Routers
+//For user credentials
+let userRouter = require("./api/UserAPI");
+let movieRouter = require("./api/MovieAPI");
+let credentialRouter = require("./api/Credentials");
+
+//Express setup
 const app = express();
-const port = 5000;
+const host = serverConfig.server.host;
+const port = serverConfig.server.port;
 
-app.listen(port, () => console.log('Server ready on port:' + port))
+//Listen requests
+app.listen(port, () => console.log('Server ready on port:' + port));
 
-/* GET React App */
+
+//Check database data with the local file
+let synchronizeData = require('./config/DataConfiguration');
+const mongoose = require("mongoose");
+const checkDatabase = async () => {
+    await synchronizeData.synchronizeLocalFile();
+}
+checkDatabase();
+
 
 app.set('view engine', 'jade');
-
 app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use(express.static('public'));
 
-app.use("/api/credential",
-    recipeAPIRouter);
-app.use("/api/",
-    populateDBRouter);
-app.use("/api/",
-    getRecipeAPIRouter);
-app.use("/api/",
-    getPopulateDBRouter);
+// need cookieParser middleware before we can do anything with cookies
+app.use(cookieParser("secret"));
+
+//Session depended on cookie
+app.use(session({
+        'secret': 'ㄴ(ㅡㅅㅡ;)ㄱ'
+    }
+));
+
+app.use("/user", userRouter);
+app.use("/movie", movieRouter);
+app.use("/credential", credentialRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
     next(createError(404));
 });
+
 
 // error handler
 app.use(function(err, req, res, next) {

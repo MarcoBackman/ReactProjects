@@ -1,30 +1,50 @@
-let mongoose = require('mongoose');
-let mongoDB = 'mongodb://localhost:27017/movie-SungJunBaek-4804';
-let express = require('express');
-mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true});
+/*
+    This file handles cookies, session and page permissions
+ */
 
+let mongoose = require('mongoose');
+let dbConfig = require("../config/dbConfig.json");
+
+let host = dbConfig.database.host;
+let port = dbConfig.database.port;
+let dbname = dbConfig.database.dbname;
+let mongoDB = `mongodb://${host}:${port}/${dbname}`;
+
+mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true});
 let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
+let express = require("express");
 let router = express.Router();
 
-//create a schema for the model
-var Schema = mongoose.Schema;
+//Setup cookie -> client side
+router.post('/cookieSetup', async (req, res) => {
 
+    //Cookie options
+    let options = {
+        maxAge: 1000 * 60 * 15, // would expire after 15 minutes
+        httpOnly: true, // The cookie only accessible by the web server
+        signed: true // Indicates if the cookie should be signed
+    }
 
-// Export model, so we can import it in other files.
-let Recipe = mongoose.model("Recipe", RecipeSchema);
+    //Set cookie
+    res.cookie('username', req.body.user, options);
+    res.send('');
 
-// This section will help you create a new document.
-router.post('/login', (req, res) => {
-    console.log("Post request");
+    //Get cookie info
+    console.log('Cookies: ', req.cookies.username);
 
-    newRecipe.save(function (err) {
-        if (err) return console.error(err);
-        console.log("Data saved");
-    });
-
-    res.send(newRecipe);
+    // Cookies that have been signed
+    console.log('Signed Cookies: ', req.signedCookies);
 });
 
+router.get('/getCookie', async (req, res) => {
+    //Get cookie info
+    console.log('Cookies: ', req.cookies.username);
+});
+
+
+//Setup session based on the cookie -> serverside only
+
+// This section will help you create a new document.
 module.exports = router;
