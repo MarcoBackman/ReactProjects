@@ -18,15 +18,13 @@ db.on('error', console.error.bind(console, 'connection error:'));
 let router = express.Router();
 let genres = {};
 
-//Get all movie info
-router.get('/getMovies', async (req, res) => {
-    let result = await MovieModel.find();
+router.post('/getMovieByID', async (req, res) => {
+    var ObjectId = require('mongoose').Types.ObjectId;
+    var query = { movieID: new ObjectId(req.body.movie) };
+    console.log(req.body.movieID);
+    let result = await MovieModel.findById(req.body.movie);
+    console.log(result);
     res.json(result);
-});
-
-//Get a single movie info
-router.get('/getMovie', async (req, res) => {
-
 });
 
 router.get('/getGenreTypes', async (req, res) => {
@@ -43,9 +41,7 @@ router.post('/getMoviesByGenre', async (req, res) => {
     //Find genre value
 
     //Sort by rate first
-    console.log(req.body.genre);
     let result = await MovieModel.find(genre_query).sort(sortByRateDescending).limit(10);
-    console.log(result);
     res.json(result);
 });
 

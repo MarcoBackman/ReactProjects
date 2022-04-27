@@ -14,6 +14,8 @@ div.movie_title p {
     inline-size: 250px;
     font-size: 16px;
     white-space: pre-line;
+    height: 32px;
+    max-height: 32px;
 }
 
 article.movieCard > p {

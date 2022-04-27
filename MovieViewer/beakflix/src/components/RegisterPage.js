@@ -48,6 +48,7 @@ function RegisterPage(props) {
             alert("ID is too short");
             return;
         }
+
         //validate email
         let is_valid_email = matchEmailRegex(form.email);
 
@@ -62,9 +63,11 @@ function RegisterPage(props) {
 
         if (is_valid_password === false) {
             setAllowSubmit(false);
-            alert("Wrong password format");
+            alert("Wrong password format must contain special character & upper & lowercase & number with more than 8 length");
             return;
         }
+
+        //password reenter match
 
         setAllowSubmit(true);
     }

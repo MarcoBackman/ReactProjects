@@ -4,6 +4,7 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
+let Tokens = require('csrf');
 
 //local config file import
 let serverConfig = require("./config/serverConfig.json"); //Get
@@ -31,23 +32,36 @@ const checkDatabase = async () => {
 }
 checkDatabase();
 
+const path = require('path')
+const buildPath = path.normalize(path.join(__dirname, '../baekflix/build/'));
 
 app.set('view engine', 'jade');
 app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static('public'));
+app.use(express.static(buildPath));
 
 // need cookieParser middleware before we can do anything with cookies
 app.use(cookieParser("secret"));
 
 //Session depended on cookie
 app.use(session({
-        'secret': 'ㄴ(ㅡㅅㅡ;)ㄱ'
-    }
-));
+    secret: '379heghkhk0088bh', //secret key
+}));
 
+//Generate and set secret token
+let csrf = new Tokens();
+csrf.secret(function (err, secret) {
+    if (err) throw err
+// do something with the secret
+});
+
+console.log(buildPath);
+
+app.use('(/*)?', async (req, res, next) => {
+    res.sendFile(path.join(buildPath, 'index.html'));
+});
 app.use("/user", userRouter);
 app.use("/movie", movieRouter);
 app.use("/credential", credentialRouter);

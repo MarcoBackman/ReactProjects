@@ -14,7 +14,8 @@ let UserSchema = new mongoose.Schema({
             required : stringField
         },
     hash : String,
-    salt : String
+    salt : String,
+    likedMovies : Array
 });
 
 UserSchema.methods.setPassword = function(password) {

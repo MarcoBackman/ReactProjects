@@ -1,5 +1,5 @@
 import {BrowserRouter, Route, Routes, Navigate} from "react-router-dom";
-import CookieConsent, { Cookies, resetCookieConsentValue } from "react-cookie-consent";
+import CookieConsent, { Cookies, resetCookieConsentValue, getCookieConsentValue } from "react-cookie-consent";
 import React, {useState, useEffect} from 'react';
 import history from "./History";
 
@@ -30,9 +30,8 @@ async function setCookieSeission(name) {
 function App() {
     //User data
     const [user,setUser] = useState({
-        name : "Guest",
-        favorite_list : {},
-        recent_watch_list : {}
+        name : 'Guest',
+        favorite_list : [],
     });
 
     //session status
@@ -41,14 +40,54 @@ function App() {
         status : "Sign In"
     });
 
-    //Check for session
-    console.log(resetCookieConsentValue());
-    //Pass user data session
+    async function initialize() {
+        //Set user by session
+        await axios.get('/credential/getSession')
+            .then((resp) => {
+                if (resp.data === '') {
+                    resetCookieConsentValue();
+                } else {
+                    setUser({
+                        name : resp.data,
+                        favorite_list : user.favorite_list
+                    });
+                    setSession({
+                        login : true,
+                        status : "Sign Out"
+                    });
+                }
+            })
+            .catch(err => {
+                console.error(err);
+            });
+        if (user.name === "Guest") {
+            return;
+        }
+        //get favorite lists first
+        await axios.post('/user/favorite', {id : user.name})
+                .then((resp) => {
+                    if (resp.data === '') {
+                        setUser({
+                            name : user.name,
+                            favorite_list : []
+                        });
+                    } else {
+                        setUser({
+                            name : user.name,
+                            favorite_list : resp.data
+                        });
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+    }
 
+    //Check for session on login
+    useEffect(() => {
+        initialize();
+    }, [user.name]);
 
-    //Pass default data session
-
-    //Add cookie banner
     return (
         <div className="App">
             <UserContext.Provider value={user}>

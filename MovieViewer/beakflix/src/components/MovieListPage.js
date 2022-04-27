@@ -41,15 +41,27 @@ function MovieListPage(props) {
     }, []);
 
     //create categories
-    let listOfCategory = [];
+    const [userCategory, setUserCategory]=useState([]);
+    let keyIndex = 0;
+    useEffect(() => {
+        if (props.user.favorite_list.length > 0) {
+            setUserCategory(<Category key={keyIndex} title="My likes" user={props.user}/>);
+            keyIndex++;
+        } else {
+            setUserCategory(null);
+        }
+    }, [props.user, props.user.favorite_list]);
+    let listOfCategory = []
     for (let i = 0; i < genreList.length; i++) {
-        listOfCategory.push(<Category key={i} title={genreList[i]} user={props.user}/>);
+        listOfCategory.push(<Category key={keyIndex} title={genreList[i]} user={props.user} setUser={props.setUser}/>);
+        keyIndex++;
     }
 
     return (
         <article id="register_page">
             <NavigationBar user={props.user} setUser={props.setUser} session={props.session} setSession={props.setSession}/>
             <div id="category_holder">
+                {userCategory}
                 {listOfCategory}
             </div>
         </article>

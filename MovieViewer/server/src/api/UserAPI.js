@@ -25,12 +25,12 @@ router.post('/login', async (req, res) => {
         id: req.body.id,
     });
 
-    if (user == null) {
+
+    if (user === null) {
         res.json(false);
     } else { //Match Password
-        console.log(user.hash);
-        let password_result = user.validPassword(req.body.pw);
-        if (password_result) {
+        let authorized = user.validPassword(req.body.pw);
+        if (authorized) {
             res.json(true);
         } else {
             res.json(false);
@@ -57,7 +57,8 @@ router.post('/register', async (req, res) => {
     //Create new model
     let userModel = new UserModel({
         id: req.body.id,
-        email: req.body.email
+        email: req.body.email,
+        likedMovies: [] //empty array
     });
 
     userModel.setPassword(req.body.pw);
@@ -68,6 +69,58 @@ router.post('/register', async (req, res) => {
 
 
     res.json(true);
+});
+
+//get favorite movies
+router.post('/favorite', async (req, res) => {
+    //There can be only one unique id
+    let user = await UserModel.findOne({
+        id: req.body.id,
+    });
+
+    if (user === null) {
+        res.json(false);
+    } else { //User exist
+        console.log("Returning liked movies");
+        console.log(user.likedMovies);
+        res.json(user.likedMovies);
+    }
+});
+
+//add one favorite movie
+router.post('/add_favorite', async (req, res) => {
+    //There can be only one unique id
+    let result = await UserModel.updateOne({ id: req.body.id }, {
+        $push: {
+            likedMovies: req.body.movieId,
+        },
+    });
+    res.json(result);
+});
+
+//add one favorite movie
+router.post('/remove_favorite', async (req, res) => {
+    //There can be only one unique id
+    let result = await UserModel.updateOne({ id: req.body.id }, {
+        $pull: {
+            likedMovies: req.body.movieId,
+        },
+    });
+    res.json(result);
+});
+
+//add one favorite movie
+router.post('/get_movies_by_id', async (req, res) => {
+    //There can be only one unique id
+    let user = await UserModel.findOne({
+        id: req.body.id,
+    });
+
+    if (user === null) {
+        res.json(false);
+    } else { //User exist
+        res.json(user.likedMovies);
+    }
 });
 
 module.exports = router;

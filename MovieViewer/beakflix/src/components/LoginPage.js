@@ -4,6 +4,7 @@ import NavigationBar from "./NavigationBar";
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
+import {resetCookieConsentValue} from "react-cookie-consent";
 
 function LoginPage(props) {
 
@@ -22,6 +23,16 @@ function LoginPage(props) {
         return newLogin;
     }
 
+    function setSession(userID) {
+        axios.post('/credential/postSession', {user : userID})
+            .then(resp => {
+                console.log(resp);
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    }
+
     async function handleSubmit(form) {
         await axios.post('/user/login', form)
             .then(resp => {
@@ -35,28 +46,24 @@ function LoginPage(props) {
                         status : "Sign out"
                     });
 
-                    //Allow user cookie
-
                     //Change user state
                     props.setUser({
                         name : form.id,
-                        favorite_list : {},
-                        recent_watch_list : {}
+                        favorite_list : resp.data,
+                        recent_watch_list : []
                     });
-
 
                     alert("Logged in success");
 
-
                     //Redirect to main
                     navigate("/home")
-
                 }
             })
             .catch(err => {
                 console.error(err);
                 alert("Failed request: Server Error");
             });
+        setSession(form.id);
     }
 
     async function loginEvent(event) {

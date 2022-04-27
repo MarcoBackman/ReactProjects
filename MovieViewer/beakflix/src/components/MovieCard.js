@@ -4,6 +4,7 @@ import { GrView } from 'react-icons/gr';
 
 import React, {useEffect, useState} from 'react';
 import UserContext from './UserContext';
+import axios from "axios";
 
 function convertTime(duration) {
     let time_string = ""
@@ -26,18 +27,28 @@ function convertTime(duration) {
 }
 
 function MovieCard(props) {
-
+    const [icon, setIcon] = useState(<MdFavoriteBorder/>);
+    const [iconText, setIconText] = useState("Like");
     const [button, setButton] = useState(null);
-    const [icon, setIcon] = useState(null);
+    let changed = false;
 
-    function identifyUser() {
+    function identifyUserFavorite() {
         if (props.user.name !== "Guest") {
-            setButton(
-                <button type="button"  className="add_favorite" name="add_favorite"
-                        onClick={onFavClickHandler}>
-                    <MdOutlineFavorite/> Like
-                </button>
-            );
+            //Check userstate if someone liked the movie
+            if (props.user.favorite_list.includes(props.data._id)) {
+                setIcon(<MdOutlineFavorite/>);
+                setButton(
+                    <button type="button"  className="add_favorite" name="add_favorite" onClick={onFavClickHandler}>
+                        {icon} {iconText}
+                    </button>
+                );
+            } else {
+                setButton(
+                    <button type="button"  className="add_favorite" name="add_favorite" onClick={onFavClickHandler}>
+                        {icon} {iconText}
+                    </button>
+                );
+            }
         } else {
             setButton(
                 null
@@ -45,10 +56,71 @@ function MovieCard(props) {
         }
     }
 
-    //Execute this after page load
+    async function sync_favorite_list() {
+        //get favorite lists first
+        await axios.post('/user/favorite', {id : props.user.name})
+            .then((resp) => {
+                if (resp.data === '') {
+                    props.setUser({
+                        name : props.user.name,
+                        favorite_list : []
+                    });
+                } else {
+                    props.setUser({
+                        name : props.user.name,
+                        favorite_list : resp.data
+                    });
+                }
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    }
+
+    async function requestAddFavorite() {
+        console.log("Add request " + props.user.name);
+        console.log("id " + props.data._id);
+        let target = props.data._id;
+        await axios.post('/user/add_favorite', {id : props.user.name, movieId: target})
+            .then((resp) => {
+                console.log(resp);
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    }
+
+    async function requestRemoveFavorite() {
+        console.log("Remove request");
+        let target = props.data._id;
+        await axios.post('/user/remove_favorite', {id : props.user.name, movieId: target})
+            .then((resp) => {
+                console.log(resp);
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    }
+
+    //identify favorite list on favorite change
     useEffect(() => {
-        identifyUser();
-    });
+        if (props.user.favorite_list.length > 0) {
+            identifyUserFavorite();
+        }
+    }, [props.user.favorite_list]);
+
+    //Change icon on state change
+    useEffect(() => {
+        if (props.user.name === "Guest") {
+            setButton(null);
+        } else {
+            setButton(
+                <button type="button"  className="add_favorite" name="add_favorite" onClick={onFavClickHandler}>
+                    {icon} {iconText}
+                </button>
+            );
+        }
+    }, [icon, iconText, props.user.name]);
 
     //Switch view on clicking detailed view button
     function onViewClickHandler(e) {
@@ -56,8 +128,22 @@ function MovieCard(props) {
     }
 
     //change icon and statement on fav button click
-    function onFavClickHandler(e) {
+    async function onFavClickHandler(e) {
         e.preventDefault();
+        //If not liked -> add to user favorite DB
+        if (iconText === "Like") {
+            //Add to DB first
+            requestAddFavorite();
+            setIcon(<MdOutlineFavorite/>);
+            setIconText("Unlike");
+            sync_favorite_list();
+        } else {
+            //Remove from user favorite DB
+            requestRemoveFavorite();
+            setIcon(<MdFavoriteBorder/>);
+            setIconText("Like");
+            sync_favorite_list();
+        }
     }
 
     return (
