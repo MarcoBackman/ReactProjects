@@ -1,7 +1,7 @@
 {
   "database": {
-    "host" : "localhost",
-    "port": 27017,
-    "dbname" : "movie-SungJunBaek-4804"
+    "host" : "",
+    "port": ,
+    "dbname" : ""
   }
 }
